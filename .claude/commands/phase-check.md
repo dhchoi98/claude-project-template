@@ -1,7 +1,22 @@
-Read PLAN.md and calculate progress:
-1. Count completed [x] vs total [ ] items per phase
-2. Show progress bar for each phase (e.g. Phase 1: [####....] 4/8)
-3. Highlight the current active phase
-4. List next 3 priority tasks
+PLAN.md와 .work/BOARD.md를 읽고 진행률을 계산한다:
 
-Format as a compact table.
+1. Phase별 완료 [x] vs 전체 태스크 수
+2. 각 Phase 진행률 막대 표시
+3. 현재 활성 Phase 강조
+4. 다음 우선순위 태스크 3개 (클레임 가능한 것만)
+5. 전체 프로젝트 진행률
+
+출력:
+```
+━━━ PROGRESS ━━━
+Phase 1: [########....] 6/10 (60%)  ◀ 현재
+Phase 2: [............]  0/8  ( 0%)
+Phase 3: [............]  0/5  ( 0%)
+전체:    [####........]  6/23 (26%)
+
+🎯 다음 태스크:
+1. T{XXX} — {제목}
+2. T{YYY} — {제목}
+3. T{ZZZ} — {제목}
+━━━━━━━━━━━━━━━━━━
+```

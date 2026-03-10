@@ -1,9 +1,27 @@
-Review the recent changes:
-1. Check all modified files have proper docstrings at the top
-2. Verify no hardcoded API keys or secrets
-3. Check DB access uses read-only sessions by default
-4. Verify corresponding tests exist for engine logic changes
-5. Check the relevant CLAUDE.md files are up to date
-6. Run ruff check and report issues
+현재 세션의 변경사항을 리뷰한다:
 
-Output a brief review summary with pass/fail for each item.
+1. 변경/생성된 파일 목록 확인
+2. 각 파일에 대해 체크:
+   - 파일 상단 docstring/JSDoc 존재 여부
+   - 하드코딩된 API 키/시크릿 없는지
+   - DB 접근이 read-only 기본인지
+   - 핵심 로직 변경 시 테스트 파일 존재 여부
+   - 해당 폴더 CLAUDE.md 업데이트 여부
+3. 병렬 세션 규칙 체크:
+   - 현재 클레임한 태스크의 파일 범위 내에서만 수정했는지
+4. 린터 실행 (해당 언어 린터가 있을 때)
+
+출력:
+```
+━━━ REVIEW ━━━
+세션: S{N} | 태스크: T{XXX}
+변경 파일: {N}건
+
+✅/❌ docstring
+✅/❌ API 키
+✅/❌ 파일 범위
+✅/❌ 테스트
+
+종합: {PASS | {N}건 수정 필요}
+━━━━━━━━━━━━━━
+```

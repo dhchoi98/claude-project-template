@@ -1,6 +1,6 @@
-When creating a new file:
-1. Add a docstring/JSDoc at the very top explaining the file's purpose
-2. Follow the import order defined in project conventions
-3. Update the CLAUDE.md in the same directory to include the new file
-4. If it's an engine file, create a corresponding test file
-5. If it adds a new API endpoint, update the API docs
+새 파일을 생성할 때:
+1. 파일 최상단에 docstring/JSDoc으로 파일의 목적을 기술한다
+2. 프로젝트 컨벤션에 맞는 import 순서를 따른다
+3. 같은 디렉토리에 CLAUDE.md가 있으면 새 파일 정보를 추가한다
+4. 핵심 로직 파일이면 대응하는 테스트 파일도 생성한다
+5. API 엔드포인트를 추가하면 API 문서를 업데이트한다

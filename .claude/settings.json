@@ -3,18 +3,19 @@
     "allow": [
       "Read",
       "Edit",
+      "Write",
+      "Glob",
+      "Grep",
       "Bash(git *)",
-      "Bash(cd *)",
+      "Bash(gh *)",
       "Bash(ls *)",
       "Bash(cat *)",
       "Bash(find *)",
       "Bash(grep *)",
+      "Bash(mkdir *)",
       "Bash(python -m pytest *)",
       "Bash(ruff *)",
       "Bash(mypy *)",
-      "Bash(alembic *)",
-      "Bash(docker compose *)",
-      "Bash(pip install *)",
       "Bash(npm *)",
       "Bash(pnpm *)",
       "Bash(bun *)"
@@ -23,7 +24,9 @@
       "Bash(rm -rf /)",
       "Bash(DROP TABLE *)",
       "Bash(TRUNCATE *)",
-      "Bash(* --force-delete *)"
+      "Bash(* --force-delete *)",
+      "Bash(git push --force *)",
+      "Bash(git reset --hard *)"
     ]
   }
 }

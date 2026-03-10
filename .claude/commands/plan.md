@@ -1,6 +1,8 @@
-Read PLAN.md and summarize:
-1. Current phase and what's done vs remaining
-2. Next 3 priority tasks
-3. Any blockers
+PLAN.md를 읽고 개발 계획을 요약한다:
 
-Update PLAN.md if any tasks were completed in this session.
+1. 현재 Phase와 완료/잔여 태스크
+2. 다음 우선순위 태스크 3개 (BOARD.md의 의존성, 담당 상태 참고)
+3. 블로커 유무
+
+BOARD.md도 함께 읽어 실제 진행 상태와 동기화한다.
+완료된 태스크가 PLAN.md에 반영되지 않았으면 업데이트한다.
