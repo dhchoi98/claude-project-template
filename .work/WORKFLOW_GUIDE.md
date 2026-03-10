@@ -226,11 +226,11 @@ claude --teleport -p "의존성 보안 취약점 체크 후 리포트 작성"
 
 ```
 09:00  로컬 5탭 시작
-       S1: T001 CC  "인증 아키텍처 설계"
-       S2: T002 CC  "DB 스키마 설계"
-       S3: T003 DS  "결제 API 구현"
-       S4: T004 DS  "사용자 프로필 구현"
-       S5: T005 Kimi "유틸 함수 테스트"
+       S1: T001 CC    "인증 아키텍처 설계"
+       S2: T002 CC    "DB 스키마 설계"
+       S3: T003 Auto  "결제 API 구현"        ← Cursor Auto (무제한)
+       S4: T004 Auto  "사용자 프로필 구현"     ← Cursor Auto (무제한)
+       S5: T005 Auto  "유틸 함수 테스트"       ← Cursor Auto (무제한)
 
 09:10  백그라운드 3개 teleport
        claude --teleport -p "전체 코드베이스 의존성 분석"
