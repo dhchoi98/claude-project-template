@@ -119,6 +119,16 @@ rm setup.sh init-labels.sh
 git add -A && git commit -m "chore: 프로젝트 초기 설정"
 ```
 
+**학습 로드맵** (QUICKSTART.md Section 3에 상세):
+
+```
+Level 1 (1~2주)   mvp로 시작, 기본 흐름 익히기
+Level 2 (2~4주)   production 전환, 타입 + 테스트 추가
+Level 3 (1~2개월)  Contract-First 패턴 체득
+Level 4 (2~3개월)  멀티세션 병렬 운영
+Level 5 (3개월~)   Docker/CI + 템플릿 자체 개선
+```
+
 ## 커스터마이징
 
 | 파일 | 수정 포인트 |
@@ -129,6 +139,23 @@ git add -A && git commit -m "chore: 프로젝트 초기 설정"
 | `.claude/commands/*.md` | 프로젝트에 맞는 명령어 추가 |
 | `.github/ISSUE_TEMPLATE/*.yml` | 컴포넌트 드롭다운 수정 |
 | `.github/GIT_WORKFLOW.md` | 브랜치 전략 변경 시 |
+
+## 문서 구조
+
+```
+CLAUDE.md                    <- AI가 읽는 규칙 (자동 생성)
+PLAN.md                      <- 개발 로드맵
+docs/
+  QUICKSTART.md              <- 사용법 + 학습 가이드
+  METHODOLOGY.md             <- 코딩 방법론 (왜 이렇게 하는가)
+  CHECKLISTS.md              <- 체크리스트 모음
+.work/
+  BOARD.md                   <- 티켓 보드 (team 모드)
+  WORKFLOW_GUIDE.md          <- 멀티세션 운영 가이드
+  MISTAKES.md                <- 오답 노트
+.github/
+  GIT_WORKFLOW.md            <- Git/PR/이슈 규칙
+```
 
 ## 요구사항
 

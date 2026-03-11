@@ -192,7 +192,10 @@ T004 Auto "바이낸스 브로커 구현"                 파일: adapters/binan
 - `.work/BOARD.md` — 티켓 보드 (team 모드)
 - `.work/WORKFLOW_GUIDE.md` — 멀티세션 운영 가이드
 - `.work/MISTAKES.md` — 오답 노트
-- `docs/` — 설계 문서
+- `docs/QUICKSTART.md` — 템플릿 사용법 + 학습 가이드
+- `docs/METHODOLOGY.md` — 코딩 방법론 (타입, Contract-First, 테스트, AI 프롬프팅)
+- `docs/CHECKLISTS.md` — 체크리스트 모음 (새 프로젝트, 새 기능, Anti-patterns)
+- `docs/` — 프로젝트별 설계 문서
 
 ## 현재 상태
 
