@@ -6,11 +6,29 @@ __pycache__/
 venv/
 dist/
 build/
+*.whl
 
 # Node
 node_modules/
 .next/
 out/
+.nuxt/
+.output/
+
+# Go
+/vendor/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Rust
+/target/
+Cargo.lock
+
+# Docker
+docker-compose.override.yml
 
 # Environment
 .env
@@ -23,10 +41,33 @@ out/
 *.swp
 *.swo
 *~
+*.iml
 
 # OS
 .DS_Store
 Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Coverage & Testing
+coverage/
+htmlcov/
+.coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# Project setup markers (setup.sh에서 생성, hooks가 참조)
+# .project-config는 커밋에 포함 (팀 공유 필요)
+.python-strict

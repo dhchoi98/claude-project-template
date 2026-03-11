@@ -28,9 +28,9 @@
 1. T{XXX} — {제목} [{유형}]
 2. T{YYY} — {제목} [{유형}]
 
-🔧 Cursor 티켓 (DS/Kimi에서 작업):
-  T{AAA} — {제목} [{유형}] [DS]
-  T{BBB} — {제목} [{유형}] [Kimi]
+🔧 Cursor 티켓 (Auto/Premium/MAX에서 작업):
+  T{AAA} — {제목} [{유형}] [Auto]
+  T{BBB} — {제목} [{유형}] [Premium]
 
 클레임: /claim T{XXX}
 ━━━━━━━━━━━━━━━━━━━
