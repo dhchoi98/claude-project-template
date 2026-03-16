@@ -1,0 +1,12 @@
+version: 1
+policy: single-writer-many-reviewers
+write_boundaries:
+  - scope: "feature/*"
+    rule: "One active writer per feature branch/worktree"
+  - scope: "shared/*"
+    rule: "Only modify when required by approved plan with impact notes"
+  - scope: "global"
+    rule: "Avoid broad refactors mixed with feature delivery"
+forbidden:
+  - "Direct writes to main"
+  - "Unapproved multi-feature edits"

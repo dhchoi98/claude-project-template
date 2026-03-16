@@ -1,0 +1,14 @@
+version: 1
+hotspots:
+  - path: "package.json"
+    reason: "Dependency changes impact whole repo"
+  - path: "pyproject.toml"
+    reason: "Toolchain and lint/test behavior"
+  - path: "Cargo.toml"
+    reason: "Workspace/build graph impact"
+  - path: ".github/workflows/*"
+    reason: "CI/CD and automation blast radius"
+  - path: "shared/**"
+    reason: "Cross-feature API and type coupling"
+policy:
+  - "If hotspot is modified, include explicit impact note in PR"
