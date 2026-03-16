@@ -1,0 +1,21 @@
+version: 1
+gates:
+  correctness:
+    required: true
+    checks:
+      - "No obvious regression in changed flows"
+      - "Edge cases considered"
+  security:
+    required: true
+    checks:
+      - "No secret leakage"
+      - "Input/output validation preserved"
+  testing:
+    required: true
+    checks:
+      - "Changed behavior covered by tests or justified"
+  architecture:
+    required: true
+    checks:
+      - "Feature scope respected"
+      - "No unplanned hotspot drift"
