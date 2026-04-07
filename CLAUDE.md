@@ -54,6 +54,7 @@
 
 세션 시작 시 `.claude/hooks/session-start.sh`가 PLAN.md/MISTAKES/Git 상태를 자동 로드한다.
 컨텍스트 압축 직전 `.claude/hooks/pre-compact.sh`가 `.work/snapshots/`에 작업 상태를 자동 저장한다.
+대화 간 영구 메모리(`~/.claude/projects/<slug>/memory/`)는 [docs/MEMORY.md](docs/MEMORY.md)의 4유형(user/feedback/project/reference) 컨벤션을 따른다.
 
 ---
 
