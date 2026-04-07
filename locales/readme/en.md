@@ -2,161 +2,116 @@
 
 [한국어 문서](README.ko.md)
 
-A universal development template that runs **Claude Code + Codex + GitHub automation** together.
-Suitable for hackathons, production services, SCADA, quant trading, and security projects.
+A lean **solo-developer** template for projects driven primarily by **Claude Code**, with **Codex** as a side-tool for boilerplate.
+
+No team mode. No multi-session ticket board. No setup script. Clone, open Claude Code, run `/init`, and start working.
 
 ## What's Included
 
 ### Claude Code setup (`.claude/`)
-- **commands/** — 13 slash commands (`/start`, `/end`, `/claim`, `/tasks`, `/plan`, `/review`, `/session`, `/sync`, `/handoff`, `/spec`, `/newfile`, `/cleanup`, `/phase-check`)
-- **hooks/** — pre-commit checks by rigor level, multi-language lint/format hooks
-- **settings.json** — default allow/deny command policy (Python, Node, Go, Rust, Docker, Make, etc.)
+- **commands/** — slash commands (`/init`, `/tasks`, `/plan`, `/phase-check`, `/review`, `/spec`, `/newfile`, `/cleanup`)
+- **skills/** — reusable work patterns (`read-first`, `self-verify`, `tdd-loop`)
+- **agents/** — subagent definitions (`code-reviewer`)
+- **hooks/** — auto-context loaders (`session-start.sh`, `pre-compact.sh`) + pre-commit checks scaled by rigor
+- **settings.json** — allow/deny command policy + hooks registration
 
-### Universal agent contract (`AGENTS.md`, `docs/steering/`)
-- **AGENTS.md** — tool-agnostic operating contract (SWMR: Single Writer, Many Reviewers)
-- **docs/steering/** — repository contract, write boundaries, review gates, hotspot policy
+### AI tool contract (`AGENTS.md`)
+- Universal operating contract followed by Claude Code, Codex, and any other AI tool you bolt on.
 
 ### Codex setup (`.codex/`)
-- **AGENTS.md** — Codex adapter rules (execution/audit modes)
-- **config.toml** — project-local Codex runtime profiles
+- **AGENTS.md** — Codex adapter rules
+- **config.toml** — project-local Codex profiles
 - **agents/** — role prompts (`explorer`, `reviewer`, `feature-worker`)
 
 ### GitHub automation (`.github/`)
-- **workflows/** — automatic labeling, board sync, stale issue management
-- **workflows/codex-pr-review.yml** — Codex PR auto-review (comment/report-first)
-- **ISSUE_TEMPLATE/** — Feature Request, Bug Report, Task templates
+- **workflows/** — auto-labeling, board sync, stale issue management
+- **workflows/codex-pr-review.yml** — Codex PR auto-review (comment/report-only)
+- **ISSUE_TEMPLATE/** — Feature, bug, task templates
 - **PULL_REQUEST_TEMPLATE.md** — PR checklist
 - **GIT_WORKFLOW.md** — branch/commit/issue/PR conventions
 
 ### Project foundations
-- **CLAUDE.md** — project rules (mode/rigor/domain-aware)
-- **PLAN.md** — implementation planning template
-- **.gitignore** — Python, Node, Go, Rust, Docker, IDE, OS defaults + domain extras
+- **CLAUDE.md** — solo developer rules + Claude Code/Codex tool division
+- **PLAN.md** — phase-based roadmap template
+- **docs/RIGOR.md** — engineering depth presets (mvp/production/enterprise)
+- **.gitignore** — Python, Node, Go, Rust, Docker, IDE, OS defaults
 
 ## Usage
 
 ### 1) Create a repository from this template
 
-On GitHub, click **Use this template** → **Create a new repository**.
+On GitHub click **Use this template** → **Create a new repository**.
 
-### 2) Clone and initialize
+### 2) Clone and open Claude Code
 
 ```bash
 git clone git@github.com:<your-user>/<your-repo>.git
 cd <your-repo>
-chmod +x setup.sh init-labels.sh
+claude
 ```
 
-### 3) Run setup
+### 3) Run `/init`
 
-```bash
-./setup.sh <project-name> <github-username> [options]
-```
-
-#### Real examples
-
-```bash
-# Hackathon (fast start)
-./setup.sh hackathon dhchoi98 --type web --rigor mvp
-
-# SCADA delivery (enterprise quality)
-./setup.sh scada-hmi dhchoi98 --type scada --rigor enterprise --mode team
-
-# Quant trading (production quality, contract-first)
-./setup.sh quant-bot dhchoi98 --type quant --rigor production
-
-# Security lab / CTF
-./setup.sh ctf-2026 dhchoi98 --type security --rigor mvp
-
-# ML project
-./setup.sh ml-project dhchoi98 --type ml --rigor production
-
-# Team project (5-session parallel workflow)
-./setup.sh my-service dhchoi98 --type web --rigor production --mode team
-```
-
-### Setup options
-
-#### Project type (`--type`)
-
-| Type | Generated directories | Best for |
-|------|------------------------|----------|
-| `general` (default) | `src/ tests/ docs/` | general-purpose projects |
-| `web` | `backend/ frontend/ shared/ docs/ tests/` | web services |
-| `cli` | `cmd/ internal/ docs/ tests/` | CLI/system tools |
-| `security` | `tools/ exploits/ notes/ reports/` | CTF, security labs, pentesting |
-| `ml` | `notebooks/ data/ models/ src/ tests/` | ML/AI projects |
-| `scada` | `backend/ hmi/ plc/ drivers/ docs/ tests/` | industrial control, SCADA/HMI |
-| `quant` | `core/ strategies/ data/ dashboard/ tests/` | quant trading, finance |
-
-#### Engineering rigor (`--rigor`)
-
-| Rigor | Type rules | Tests | Architecture | Good fit |
-|------|------------|-------|--------------|----------|
-| `mvp` (default) | recommended (optional) | optional | flexible | hackathons, PoC |
-| `production` | function signatures required | core modules required | contract-first, layer separation | production services |
-| `enterprise` | strict typing including variables | TDD + coverage targets | clean architecture, DIP | long-lived large systems |
-
-#### Contract-first workflow (production/enterprise)
+In Claude Code, run:
 
 ```
-Step 1: Define contracts (human-led)
-  → interfaces/protocols, types, data models
-
-Step 2: Write tests (AI-assisted)
-  → "Write contract tests for this interface"
-
-Step 3: Implement (AI-assisted)
-  → "Implement code that passes these tests"
+/init
 ```
 
-#### Workflow mode (`--mode`)
+Claude will ask you:
+- Project name + one-line description
+- Project type (`general`, `web`, `cli`, `security`, `ml`, `scada`, `quant`)
+- Engineering rigor (`mvp`, `production`, `enterprise`)
+- Tech stack (if you know it)
 
-| Mode | Description |
-|------|-------------|
-| `solo` (default) | solo development, plan mode optional, no ticket system |
-| `team` | multi-session parallel delivery, 5-session ticket workflow, plan mode required |
+…and then create the directory structure, `.project-config`, initialize PLAN.md, and brief you on the rigor level you chose.
 
-### 4) Create GitHub labels
+### 4) Start working
 
-```bash
-./init-labels.sh
+The `SessionStart` hook auto-loads `PLAN.md`, `MISTAKES.md`, the most recent snapshot, and Git status into every new session. Just open Claude Code and ask it to start working.
+
+## How rigor levels work
+
+Set in `.project-config`:
+
+```
+PROJECT_RIGOR=mvp        # speed first, types/tests optional
+PROJECT_RIGOR=production # contract-first, function signatures typed, core tests required
+PROJECT_RIGOR=enterprise # full strict, TDD, clean architecture
 ```
 
-### 5) Clean up and create your first commit
+`pre-commit` hook reads this value and scales its checks. Detailed rules in [docs/RIGOR.md](docs/RIGOR.md).
 
-```bash
-rm setup.sh init-labels.sh
-# Customize CLAUDE.md and PLAN.md for your project
-git add -A && git commit -m "chore: initial project setup"
-```
+## Tool division (Claude Code / Codex)
+
+| Tool | Role | Best for |
+|------|------|----------|
+| **Claude Code (CC)** | Main — design + implementation + review | Almost everything. Design, multi-file changes, debugging, refactor |
+| **Codex** | Side — small implementations | Boilerplate, single-file functions, repetitive patterns. Use only to save CC tokens; CC always reads the result and self-verifies |
 
 ## Customization points
 
 | File | What to customize |
 |------|-------------------|
-| `AGENTS.md` | tool-agnostic operating contract, SWMR policy |
-| `CLAUDE.md` | project glossary, architecture, stack, hard rules |
-| `.codex/config.toml` | Codex runtime policy, profiles, agent mapping |
-| `.project-config` | rigor/mode switches (used by hooks) |
-| `.claude/settings.json` | allow/deny command policy |
-| `.claude/commands/*.md` | custom project commands |
-| `.github/ISSUE_TEMPLATE/*.yml` | issue form fields/dropdowns |
-| `.github/GIT_WORKFLOW.md` | branching/release conventions |
+| `CLAUDE.md` | Project rules, glossary, stack |
+| `AGENTS.md` | Universal AI tool contract |
+| `.codex/config.toml` | Codex runtime profiles |
+| `.project-config` | Rigor switch (used by hooks) |
+| `.claude/settings.json` | Allow/deny command policy + hook registration |
+| `.claude/commands/*.md` | Custom slash commands |
+| `.claude/skills/*` | Project-specific reusable patterns |
+| `.github/ISSUE_TEMPLATE/*.yml` | Issue forms |
+| `.github/GIT_WORKFLOW.md` | Branching/release conventions |
 
 ## Documentation map
 
 ```
-AGENTS.md                    <- universal contract for all AI tools
-CLAUDE.md                    <- Claude-specific project instructions
-PLAN.md                      <- planning template
+CLAUDE.md                    <- main project rules
+AGENTS.md                    <- universal AI tool contract
+PLAN.md                      <- phase-based roadmap
 docs/
-  steering/
-    repo-contract.md         <- repository operating contract
-    write-boundaries.yaml    <- write boundary rules
-    review-gates.yaml        <- quality gates
-    hotspot-files.yaml       <- high-conflict file policy
-  QUICKSTART.md              <- quickstart + learning guide
+  RIGOR.md                   <- mvp/production/enterprise rules
+  QUICKSTART.md              <- quickstart guide
   METHODOLOGY.md             <- coding methodology
   CHECKLISTS.md              <- checklists
 .codex/
@@ -164,9 +119,9 @@ docs/
   config.toml                <- Codex runtime settings
   agents/                    <- Codex role prompts
 .work/
-  BOARD.md                   <- ticket board (team mode)
-  WORKFLOW_GUIDE.md          <- multi-session workflow guide
-  MISTAKES.md                <- mistakes log
+  MISTAKES.md                <- mistakes log (auto-loaded by SessionStart hook)
+  decisions/                 <- ADRs
+  snapshots/                 <- auto-saved by PreCompact hook
 .github/
   GIT_WORKFLOW.md            <- Git/PR/issue conventions
 ```
@@ -175,6 +130,7 @@ docs/
 
 - [Claude Code](https://claude.com/claude-code) CLI
 - [GitHub CLI](https://cli.github.com/) (`gh auth login` completed)
+- (optional) [Codex CLI](https://github.com/openai/codex) for offloaded boilerplate work
 - (optional) `ruff`, `mypy` for Python
 - (optional) `prettier`, `eslint` for JavaScript/TypeScript
 - (optional) `gofmt`, `go vet` for Go

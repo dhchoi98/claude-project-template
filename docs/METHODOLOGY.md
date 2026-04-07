@@ -15,7 +15,7 @@
 
 **전제:**
 - 1인 개발자가 장기(5~10년) 운영
-- AI 보조 코딩(Claude Code, Cursor)이 주력
+- AI 보조 코딩(Claude Code 메인 + Codex 보조)이 주력
 - 프로젝트가 여러 개 — 코드의 "예쁨"보다 **"6개월 뒤의 내가 이해할 수 있는가"**가 기준
 
 ---
@@ -25,13 +25,13 @@
 ### 에디터 + AI
 
 ```
-Primary:   Cursor (AI 자동완성 + 인라인 편집)
-Secondary: Claude Code (터미널 에이전트 — 설계, 리팩토링, 테스트 생성)
-Backup:    VS Code (Cursor 문제 시 fallback)
+Primary:   Claude Code (설계 + 구현 + 리뷰 전반)
+Secondary: Codex (단순 보일러플레이트 위임용)
+Editor:    취향대로 (VS Code, Neovim 등 — Claude Code가 메인 작업 공간)
 ```
 
-**Cursor:** `.cursorrules` 파일을 프로젝트 루트에 두면 프로젝트별 AI 행동을 커스텀할 수 있다.
 **Claude Code:** `CLAUDE.md`를 자동으로 읽고 따른다. 이 템플릿이 이미 설정해준다.
+**Codex:** `.codex/AGENTS.md`와 `.codex/config.toml`로 동작을 제어한다. CC 세션 안에서 `codex "..."` 셸 호출로 위임한다.
 
 ### 필수 CLI 도구
 

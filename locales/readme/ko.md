@@ -2,171 +2,126 @@
 
 [English documentation](README.md)
 
-**Claude Code + Codex + GitHub 자동화**를 함께 운용할 수 있는 범용 개발 템플릿입니다.
-해커톤, 서비스 개발, SCADA, 퀀트 트레이딩, 보안 실습 등 다양한 프로젝트에 사용할 수 있습니다.
+**1인 개발자 전용** lean 템플릿. 메인 도구는 **Claude Code**, 보조는 **Codex** (보일러플레이트용).
+
+team 모드도, 멀티세션 티켓 보드도, setup 스크립트도 없습니다. 클론 → Claude Code 실행 → `/init` → 작업 시작.
 
 ## 포함 내용
 
 ### Claude Code 설정 (`.claude/`)
-- **commands/** — 슬래시 명령어 13개 (`/start`, `/end`, `/claim`, `/tasks`, `/plan`, `/review`, `/session`, `/sync`, `/handoff`, `/spec`, `/newfile`, `/cleanup`, `/phase-check`)
-- **hooks/** — rigor 레벨별 pre-commit 검사, 멀티 언어 lint/format 훅
-- **settings.json** — 기본 허용/차단 명령 정책 (Python, Node, Go, Rust, Docker, Make 등)
+- **commands/** — 슬래시 명령어 (`/init`, `/tasks`, `/plan`, `/phase-check`, `/review`, `/spec`, `/newfile`, `/cleanup`)
+- **skills/** — 재사용 가능한 작업 패턴 (`read-first`, `self-verify`, `tdd-loop`)
+- **agents/** — 서브에이전트 정의 (`code-reviewer`)
+- **hooks/** — 자동 컨텍스트 로더 (`session-start.sh`, `pre-compact.sh`) + rigor 별 pre-commit 검사
+- **settings.json** — 허용/차단 명령 정책 + 훅 등록
 
-### 공통 에이전트 계약 (`AGENTS.md`, `docs/steering/`)
-- **AGENTS.md** — 도구 공통 운영 계약 (SWMR: Single Writer, Many Reviewers)
-- **docs/steering/** — 저장소 계약, 쓰기 경계, 리뷰 게이트, 핫스팟 정책
+### AI 도구 공통 계약 (`AGENTS.md`)
+- Claude Code, Codex, 그 외 어떤 AI 도구에도 적용되는 공통 운영 규칙
 
 ### Codex 설정 (`.codex/`)
-- **AGENTS.md** — Codex 전용 보충 규칙 (execution/audit 모드)
-- **config.toml** — 프로젝트 로컬 Codex 실행 프로필
+- **AGENTS.md** — Codex 어댑터 규칙
+- **config.toml** — 프로젝트 로컬 Codex 프로필
 - **agents/** — 역할 프롬프트 (`explorer`, `reviewer`, `feature-worker`)
 
 ### GitHub 자동화 (`.github/`)
-- **workflows/** — PR 라벨링, 보드 연동, stale 이슈 정리
-- **workflows/codex-pr-review.yml** — Codex PR 자동 리뷰 (comment/report-first)
-- **ISSUE_TEMPLATE/** — Feature Request, Bug Report, Task 템플릿
+- **workflows/** — 자동 라벨링, 보드 동기화, stale 이슈 정리
+- **workflows/codex-pr-review.yml** — Codex PR 자동 리뷰 (comment/report-only)
+- **ISSUE_TEMPLATE/** — Feature, bug, task 템플릿
 - **PULL_REQUEST_TEMPLATE.md** — PR 체크리스트
 - **GIT_WORKFLOW.md** — 브랜치/커밋/이슈/PR 규칙
 
 ### 프로젝트 기반 파일
-- **CLAUDE.md** — 프로젝트 규칙 (mode/rigor/domain 기반)
-- **PLAN.md** — 구현 계획 템플릿
-- **.gitignore** — Python, Node, Go, Rust, Docker, IDE, OS 기본 + 도메인 확장
+- **CLAUDE.md** — 1인 개발 규칙 + Claude Code/Codex 도구 분업
+- **PLAN.md** — Phase 기반 로드맵 템플릿
+- **docs/RIGOR.md** — 엔지니어링 깊이 프리셋 (mvp/production/enterprise)
+- **.gitignore** — Python, Node, Go, Rust, Docker, IDE, OS 기본값
 
 ## 사용법
 
 ### 1) 템플릿으로 새 저장소 생성
 
-GitHub에서 **Use this template** → **Create a new repository**를 선택합니다.
+GitHub에서 **Use this template** → **Create a new repository**.
 
-### 2) 클론 및 초기화
+### 2) 클론 + Claude Code 실행
 
 ```bash
 git clone git@github.com:<your-user>/<your-repo>.git
 cd <your-repo>
-chmod +x setup.sh init-labels.sh
+claude
 ```
 
-### 3) setup 실행
+### 3) `/init` 실행
 
-```bash
-./setup.sh <project-name> <github-username> [options]
-```
-
-#### 실행 예시
-
-```bash
-# 해커톤 (빠른 시작)
-./setup.sh hackathon dhchoi98 --type web --rigor mvp
-
-# SCADA 납품 (엔터프라이즈 품질)
-./setup.sh scada-hmi dhchoi98 --type scada --rigor enterprise --mode team
-
-# 퀀트 트레이딩 (프로덕션 품질, Contract-First)
-./setup.sh quant-bot dhchoi98 --type quant --rigor production
-
-# 보안 실습 / CTF
-./setup.sh ctf-2026 dhchoi98 --type security --rigor mvp
-
-# ML 프로젝트
-./setup.sh ml-project dhchoi98 --type ml --rigor production
-
-# 팀 프로젝트 (5세션 병렬)
-./setup.sh my-service dhchoi98 --type web --rigor production --mode team
-```
-
-### 옵션 설명
-
-#### 프로젝트 유형 (`--type`)
-
-| 유형 | 생성 디렉토리 | 용도 |
-|------|----------------|------|
-| `general` (기본) | `src/ tests/ docs/` | 범용 프로젝트 |
-| `web` | `backend/ frontend/ shared/ docs/ tests/` | 웹 서비스 |
-| `cli` | `cmd/ internal/ docs/ tests/` | CLI/시스템 도구 |
-| `security` | `tools/ exploits/ notes/ reports/` | CTF, 보안 실습, 펜테스트 |
-| `ml` | `notebooks/ data/ models/ src/ tests/` | ML/AI 프로젝트 |
-| `scada` | `backend/ hmi/ plc/ drivers/ docs/ tests/` | 산업제어, SCADA/HMI |
-| `quant` | `core/ strategies/ data/ dashboard/ tests/` | 퀀트 트레이딩, 금융 |
-
-#### 엔지니어링 엄격도 (`--rigor`)
-
-| rigor | 타입 규칙 | 테스트 | 아키텍처 | 적합한 상황 |
-|------|-----------|--------|----------|--------------|
-| `mvp` (기본) | 권장(선택) | 선택 | 유연 | 해커톤, PoC |
-| `production` | 함수 시그니처 필수 | 핵심 모듈 필수 | Contract-First, 레이어 분리 | 실서비스 |
-| `enterprise` | 변수 포함 강한 타입 규칙 | TDD + 커버리지 목표 | Clean Architecture, DIP | 장기/대규모 시스템 |
-
-#### Contract-First 워크플로우 (production/enterprise)
+Claude Code 안에서:
 
 ```
-1단계: 계약 정의 (사람 주도)
-  → 인터페이스/프로토콜, 타입, 데이터 모델
-
-2단계: 테스트 작성 (AI 보조)
-  → "이 인터페이스 계약 테스트를 작성해줘"
-
-3단계: 구현 (AI 보조)
-  → "이 테스트를 통과하는 구현을 작성해줘"
+/init
 ```
 
-#### 워크플로우 모드 (`--mode`)
+Claude가 다음을 물어봅니다:
+- 프로젝트 이름 + 한 줄 설명
+- 프로젝트 유형 (`general`, `web`, `cli`, `security`, `ml`, `scada`, `quant`)
+- 엔지니어링 깊이 (`mvp`, `production`, `enterprise`)
+- 기술스택 (있으면)
 
-| 모드 | 설명 |
-|------|------|
-| `solo` (기본) | 1인 개발, plan 모드 선택, 티켓 시스템 없음 |
-| `team` | 멀티세션 병렬 개발, 5세션 티켓 워크플로우, plan 모드 필수 |
+대답하면 디렉토리 구조 생성, `.project-config` 작성, PLAN.md 초기화, rigor 안내까지 한 번에.
 
-### 4) GitHub 라벨 생성
+### 4) 작업 시작
 
-```bash
-./init-labels.sh
+`SessionStart` 훅이 매 세션마다 PLAN.md, MISTAKES.md, 최근 스냅샷, Git 상태를 자동으로 컨텍스트에 로드합니다. Claude Code 열고 바로 작업하면 됩니다.
+
+## Rigor 레벨
+
+`.project-config`에 한 줄로 설정:
+
+```
+PROJECT_RIGOR=mvp        # 속도 우선, 타입/테스트 선택
+PROJECT_RIGOR=production # Contract-First, 함수 시그니처 타입 + 핵심 모듈 테스트
+PROJECT_RIGOR=enterprise # Full strict, TDD, Clean Architecture
 ```
 
-### 5) 정리 및 첫 커밋
+`pre-commit` 훅이 이 값을 읽어 검사 강도를 조절합니다. 자세한 규칙은 [docs/RIGOR.md](docs/RIGOR.md).
 
-```bash
-rm setup.sh init-labels.sh
-# 프로젝트에 맞게 CLAUDE.md, PLAN.md를 수정
-git add -A && git commit -m "chore: initial project setup"
-```
+## 도구 분업 (Claude Code / Codex)
+
+| 도구 | 역할 | 적합한 작업 |
+|------|------|------------|
+| **Claude Code (CC)** | 메인 — 설계 + 구현 + 리뷰 | 거의 모든 작업. 설계, 멀티파일 변경, 디버깅, 리팩토링 |
+| **Codex** | 보조 — 자잘한 구현 | 보일러플레이트, 단일 파일 함수, 반복 패턴. CC의 토큰을 아낄 때만 사용. CC가 결과를 반드시 읽고 자가 검증 |
 
 ## 커스터마이징 포인트
 
 | 파일 | 수정 포인트 |
 |------|-------------|
-| `AGENTS.md` | 도구 공통 운영 계약, SWMR 정책 |
-| `CLAUDE.md` | 프로젝트 용어, 아키텍처, 스택, 강제 규칙 |
-| `.codex/config.toml` | Codex 실행 정책, 프로필, 역할 매핑 |
-| `.project-config` | rigor/mode 스위치 (hooks 참조) |
-| `.claude/settings.json` | 명령 허용/차단 정책 |
-| `.claude/commands/*.md` | 프로젝트 맞춤 명령 |
-| `.github/ISSUE_TEMPLATE/*.yml` | 이슈 폼 항목/드롭다운 |
-| `.github/GIT_WORKFLOW.md` | 브랜치/릴리즈 정책 |
+| `CLAUDE.md` | 프로젝트 규칙, 용어, 스택 |
+| `AGENTS.md` | AI 도구 공통 계약 |
+| `.codex/config.toml` | Codex 런타임 프로필 |
+| `.project-config` | rigor 스위치 (hooks 참조) |
+| `.claude/settings.json` | 허용/차단 명령 정책 + 훅 등록 |
+| `.claude/commands/*.md` | 슬래시 명령어 |
+| `.claude/skills/*` | 프로젝트 고유 재사용 패턴 |
+| `.github/ISSUE_TEMPLATE/*.yml` | 이슈 폼 |
+| `.github/GIT_WORKFLOW.md` | 브랜치/릴리즈 규칙 |
 
 ## 문서 구조
 
 ```
-AGENTS.md                    <- 모든 AI 도구 공통 계약
-CLAUDE.md                    <- Claude 전용 보충 지침
-PLAN.md                      <- 계획 템플릿
+CLAUDE.md                    <- 메인 프로젝트 규칙
+AGENTS.md                    <- AI 도구 공통 계약
+PLAN.md                      <- Phase 기반 로드맵
 docs/
-  steering/
-    repo-contract.md         <- 저장소 운영 계약
-    write-boundaries.yaml    <- 쓰기 경계 규칙
-    review-gates.yaml        <- 품질 게이트
-    hotspot-files.yaml       <- 고충돌 파일 정책
-  QUICKSTART.md              <- 빠른 시작 + 학습 가이드
+  RIGOR.md                   <- mvp/production/enterprise 규칙
+  QUICKSTART.md              <- 빠른 시작 가이드
   METHODOLOGY.md             <- 코딩 방법론
   CHECKLISTS.md              <- 체크리스트
 .codex/
-  AGENTS.md                  <- Codex 보충 규칙
-  config.toml                <- Codex 실행 설정
+  AGENTS.md                  <- Codex 어댑터 규칙
+  config.toml                <- Codex 런타임 설정
   agents/                    <- Codex 역할 프롬프트
 .work/
-  BOARD.md                   <- 티켓 보드 (team 모드)
-  WORKFLOW_GUIDE.md          <- 멀티세션 운영 가이드
-  MISTAKES.md                <- 오답 노트
+  MISTAKES.md                <- 오답 노트 (SessionStart 훅이 자동 로드)
+  decisions/                 <- ADR (아키텍처 결정 기록)
+  snapshots/                 <- PreCompact 훅이 자동 저장
 .github/
   GIT_WORKFLOW.md            <- Git/PR/이슈 규칙
 ```
@@ -175,6 +130,7 @@ docs/
 
 - [Claude Code](https://claude.com/claude-code) CLI
 - [GitHub CLI](https://cli.github.com/) (`gh auth login` 완료)
+- (선택) [Codex CLI](https://github.com/openai/codex) — 보일러플레이트 위임용
 - (선택) Python: `ruff`, `mypy`
 - (선택) JavaScript/TypeScript: `prettier`, `eslint`
 - (선택) Go: `gofmt`, `go vet`

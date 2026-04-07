@@ -44,7 +44,8 @@
       "Bash(wc *)",
       "Bash(sort *)",
       "Bash(head *)",
-      "Bash(tail *)"
+      "Bash(tail *)",
+      "Bash(codex *)"
     ],
     "deny": [
       "Bash(rm -rf /)",
@@ -53,6 +54,30 @@
       "Bash(* --force-delete *)",
       "Bash(git push --force *)",
       "Bash(git reset --hard *)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/session-start.sh"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-compact.sh"
+          }
+        ]
+      }
     ]
   }
 }
