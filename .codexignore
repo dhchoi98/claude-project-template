@@ -1,0 +1,9 @@
+#
+# Codex sandbox fence — DO NOT REMOVE
+#
+# Codex CLI / Codex 익스텐션이 repo 를 sandbox 로 복제하는 것을 막는다.
+# 자세한 사고 사례와 가드 설계는
+#   .work/decisions/ADR-001-sandbox-secret-guards.md
+# 참조.
+#
+*

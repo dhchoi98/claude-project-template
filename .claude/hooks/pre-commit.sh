@@ -9,6 +9,70 @@ set -e
 
 echo "[Hook] 코드 품질 검사 시작..."
 
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# SECTION 0: Sandbox & Secret Guards (fail-fast, rigor 무관)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#
+# 목적: Cursor/Codex/기타 에이전트 sandbox가 repo를 임의 디렉토리로
+# 복제한 뒤 자동 커밋을 시도하거나, .gitignore를 우회해 시크릿 파일을
+# 스테이지에 올리는 사고를 차단한다. 실제 사고 사례는
+# .work/decisions/ADR-001-sandbox-secret-guards.md 참조.
+#
+# 두 가드 모두 escape hatch가 있다 (의도된 운영용):
+#   ALLOW_FOREIGN_PATH=1  → canonical-path guard 우회
+#   ALLOW_SECRET=1        → secret filename blocklist 우회
+
+# ─── 0a. Canonical path guard ────────────────────────────
+# .project-config 에 PROJECT_CANONICAL_PATH=... 가 설정돼 있으면,
+# 현재 git toplevel 이 그 경로와 정확히 일치할 때만 커밋을 허용한다.
+# (sandbox/nanoid 디렉토리에서 도는 자동 커밋을 잡는다.)
+if [ -f ".project-config" ]; then
+    CANONICAL_PATH=$(grep "^PROJECT_CANONICAL_PATH=" .project-config | cut -d= -f2- || true)
+    if [ -n "$CANONICAL_PATH" ] && [ "${ALLOW_FOREIGN_PATH:-0}" != "1" ]; then
+        TOPLEVEL=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
+        if [ "$TOPLEVEL" != "$CANONICAL_PATH" ]; then
+            echo "FAIL canonical-path guard: 현재 repo 경로가 PROJECT_CANONICAL_PATH 와 다릅니다."
+            echo "  expected: $CANONICAL_PATH"
+            echo "  actual:   $TOPLEVEL"
+            echo "  → Cursor/Codex sandbox 가 repo 를 복제했을 가능성. 원본 경로에서 작업하세요."
+            echo "  의도적인 작업이면: ALLOW_FOREIGN_PATH=1 git commit ..."
+            exit 1
+        fi
+    fi
+fi
+
+# ─── 0b. Secret filename blocklist ───────────────────────
+# 내용을 검사하기 전에 파일 이름 자체로 차단한다. .gitignore 가 우회되거나
+# 새 파일이 의도치 않게 추가되는 경우를 잡는다.
+if [ "${ALLOW_SECRET:-0}" != "1" ]; then
+    SECRET_PATTERNS=(
+        '(^|/)env\.sh$'
+        '(^|/)\.env(\.|$)'
+        '(^|/)[^/]*\.key$'
+        '(^|/)[^/]*\.pem$'
+        '(^|/)id_(rsa|ed25519|ecdsa)(\.|$)'
+        '(^|/)[^/]*client_secret[^/]*\.json$'
+        '(^|/)[^/]*credentials[^/]*\.json$'
+        '(^|/)\.openclaw/'
+        '(^|/)\.clawhub/'
+        '(^|/)secrets?/'
+    )
+    BLOCKED=""
+    STAGED_ALL=$(git diff --cached --name-only --diff-filter=ACM)
+    for pat in "${SECRET_PATTERNS[@]}"; do
+        MATCH=$(echo "$STAGED_ALL" | grep -E "$pat" || true)
+        if [ -n "$MATCH" ]; then
+            BLOCKED="$BLOCKED$MATCH"$'\n'
+        fi
+    done
+    if [ -n "$BLOCKED" ]; then
+        echo "FAIL secret-filename blocklist: 시크릿 파일로 의심되는 항목이 스테이지에 있습니다."
+        echo "$BLOCKED" | sed 's/^/  /'
+        echo "  → 의도적이면: ALLOW_SECRET=1 git commit ..."
+        exit 1
+    fi
+fi
+
 # ─── 설정 읽기 ───────────────────────────────────────────
 
 RIGOR="mvp"

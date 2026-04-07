@@ -1,0 +1,17 @@
+#
+# Cursor sandbox fence — DO NOT REMOVE
+#
+# Cursor의 일부 익스텐션(특히 Codex 통합)은 "AI에게 격리된 사본을 주자"는
+# 의도로 repo 전체를 임시 sandbox 디렉토리(예: /Users/<you>/<repo>-<nanoid>/)
+# 로 복제한 뒤 거기서 자동 커밋을 시도한다. 그 sandbox는 .gitignore 를
+# 우회할 수 있고, 시크릿/runtime state 가 의도치 않게 같이 따라간다.
+#
+# 이 파일은 Cursor 가 인덱싱·복제 대상에서 repo 전체를 제외하도록 지시한다.
+# 정말 sandbox 가 필요한 단발성 작업이면, 이 파일을 임시로 비웠다가
+# 작업 후 즉시 복원할 것.
+#
+# 관련 가드:
+#   .claude/hooks/pre-commit.sh (canonical-path guard, secret blocklist)
+#   .work/decisions/ADR-001-sandbox-secret-guards.md
+#
+*
